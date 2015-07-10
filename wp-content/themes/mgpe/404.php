@@ -1,0 +1,1 @@
+<?php get_header(); ?>    <div class="row body-content <?php echo (is_user_logged_in()) ? '' : 'margin-top' ;?>">    <div class="col-md-8 left-side">		<div class="content-post clearfix">  			<h1 class="text-center">Page not found!</h1>		</div>    </div><!-- left-side -->    <?php get_sidebar(); ?></div><!-- body-content --><?php get_footer(); ?>
