@@ -100,7 +100,7 @@
 				
 			</div>
 			<div class="navbar-collapse collapse">
-			  <?php wp_nav_menu( array('menu' => 'main-menu' )); ?>
+			  <?php wp_nav_menu( array('menu' => 'Main Menu' )); ?>
 			</div><!--/.nav-collapse -->
 		  </div>
 		</div>

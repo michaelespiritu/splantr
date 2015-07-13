@@ -15,9 +15,9 @@
             <div class="col-md-12">
 
                 <div class="col-md-12 text-center">
-                    <?php wp_nav_menu( array('menu' => 'footer-menu' )); ?>
+                    <?php wp_nav_menu( array('menu' => 'Footer Menu' )); ?>
                     <ul class="footer-menu">
-                        <?php foreach (get_field('social_media', 8) as $social => $value) :?>
+                        <?php foreach (get_field('social_media', 6) as $social => $value) :?>
                             <?php $image = $value['social_media_image'] ?>
                             <li><a href="<?php echo $value['social_media_link'] ?>" target="_blank"><img src="<?php echo $image['url']; ?>" alt="<?php echo $image['title']; ?>"></a></li>
                         <?php endforeach ?>

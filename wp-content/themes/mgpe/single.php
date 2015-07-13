@@ -4,9 +4,8 @@
         <?php while(have_posts()):the_post(); ?>
             <div class="clearfix">
                 <h1><?php the_title(); ?></h1>
-                <p class="col-md-6 col-sm-6 col-xs-6 no-padding"><small>Posted: <?php echo get_the_date( 'M d,y' ); ?></small></p>
-                <p class="col-md-6 col-sm-6 col-xs-6 no-padding text-right">  <small><?php the_tags() ?></small> </p>
-				<?php echo do_shortcode('[ssba]'); ?>   
+                <p class="col-md-12 col-sm-12 col-xs-12 no-padding"><small>Posted: <?php echo get_the_date( 'M d,y' ); ?></small></p>
+                <?php echo do_shortcode('[ssba]'); ?>
 				<div class="col-md-12 no-padding">
 					<div class="col-md-6 col-sm-6 col-xs-6 no-padding">
 						<p class="prev-post-link"><?php previous_post_link('%link', '<span class="glyphicon glyphicon-arrow-left"></span>  Back'); ?> </p>

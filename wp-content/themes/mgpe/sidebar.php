@@ -5,10 +5,10 @@
 			<?php echo do_shortcode('[gravityform id="4" name="Subscribe to get the latest news" ajax="true"]'); ?>		
 		</div>				
 		<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 sidebar clearfix cta-div">			
-			<h3>Share your Story!</h3>			
+			<h3>Company of the week!</h3>			
 			<div class="cta">			
 				<a href="/share-story" class="clearfix animate">
-					<img src="/wp-content/uploads/lips.jpg" alt="share your storied" class="col-md-12 col-xs-12 no-padding thumbnail opacity">
+					<img src="/wp-content/themes/mgpe/images/bible-vibe.png" alt="Bible Vibe" class="animate company-of-the-week">
 				</a>	
 			</div>	
 		</div>	

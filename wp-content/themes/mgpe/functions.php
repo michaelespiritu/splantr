@@ -751,7 +751,7 @@ if(function_exists("register_field_group"))
 
 					'operator' => '==',
 
-					'value' => '8',
+					'value' => '6',
 
 					'order_no' => 0,
 
@@ -1049,7 +1049,49 @@ function slider(){
  add_shortcode("slider", "slider");
 /**
 * 
-* Featured Blogs
+* Featured Blogs ONE
+*
+* @since MGPE 1.0
+*/
+ function featuredblogs(){
+      $featuredblogs = new WP_Query();
+      $featuredblogs ->query(array(
+          "post_type"=>"post",
+          "post_status"=>"publish",
+          "orderby" => "date",
+          "order" => "DESC",
+          "meta_key" => "featured_post",
+          "meta_value" => "Yes",
+		  "showposts" => 1
+
+          ));
+     ob_start();?>
+    <?php while($featuredblogs->have_posts()):  $featuredblogs -> the_post(); ?>
+    <a href="<?php the_permalink() ?>">
+	    <div class="col-md-6 col-sm-6 col-xs-12 no-padding blog-container-featured">
+			<div class="row featured-post ">
+			  <div class="col-sm-12 col-md-12 thumbnail featured-blog ">
+			    <div class="animate featured clearfix">
+			      <?php if ( has_post_thumbnail() ) { the_post_thumbnail('full', array('class' => 'col-md-12 col-xs-12 no-padding featured-image-blog')); } ?>
+			      <div class="caption-title clearfix">
+			        <h3><?php the_title(); ?></h3>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>
+	</a>
+    <?php endwhile; ?>
+	<?php
+	$contents = ob_get_contents();
+	ob_get_clean();
+	return $contents;
+ }
+
+ add_shortcode("featuredblogs", "featuredblogs");
+/**
+* 
+* Featured Blogs List
 *
 * @since MGPE 1.0
 */
@@ -1060,34 +1102,30 @@ function slider(){
           "post_status"=>"publish",
           "orderby" => "date",
           "order" => "DESC",
-          "showposts" => 6
+          "meta_key" => "featured_post",
+          "meta_value" => "No"
 
           ));
      ob_start();?>
 	<div class="clearfix">
-	<hr>
-	<h3 class="text-center">Latest Blog</h3>
-	<hr>
-    <?php $x = 1; while($blogs->have_posts()):  $blogs -> the_post(); ?>
-    <?php $x++; if($x == 3) { $x = 1; }?>
-	    <div class="col-md-6 col-sm-6 col-xs-12 no-padding ">
+	<div class="featured-blog-list">
+    <?php while($blogs->have_posts()):  $blogs -> the_post(); ?>
+    <a href="<?php the_permalink() ?>">
+	    <div class="col-md-4 col-sm-6 col-xs-12 no-padding blog-container-featured">
 			<div class="row featured-post ">
-			  <div class="col-sm-12 col-md-12 <?php echo ($x == 1) ? 'no-padding-right' : 'no-padding-left' ?> featured-blog ">
-			    <div class="thumbnail animate featured">
-			      <?php if ( has_post_thumbnail() ) { the_post_thumbnail('thumbnail', array('class' => 'col-md-12 col-xs-12 thumbnail')); } ?>
-			      <div class="caption clearfix">
+			  <div class="col-sm-12 col-md-12 thumbnail featured-blog ">
+			    <div class="animate featured clearfix">
+			      <?php if ( has_post_thumbnail() ) { the_post_thumbnail('full', array('class' => 'col-md-12 col-xs-12 no-padding featured-image-blog')); } ?>
+			      <div class="caption-title clearfix">
 			        <h3><?php the_title(); ?></h3>
-
-			        <p><small><?php the_tags() ?></small></p>
-			        
-			        <div class="the_excerpt"><p><?php echo substr(get_the_excerpt(), 0,250); ?>...</p></div>
-			        <p class="col-md-12 no-padding text-right read-more-featured"><a href="<?php the_permalink() ?>" class="btn btn-default" role="button">Read More</a> </p>
 			      </div>
 			    </div>
 			  </div>
 			</div>
 		</div>
+	</a>
     <?php endwhile; ?>
+    </div><!-- featured-blog-list -->
 	</div>
 	<?php
 	$contents = ob_get_contents();
@@ -1096,286 +1134,102 @@ function slider(){
  }
 
  add_shortcode("blogs", "blogs");
+
+ /*
+ *
+ * Custom Post Type for Company
+ *
+ */
+ 
+ class company {
+	
+	function company() {
+		add_action('init',array($this,'create_post_type_company'));
+	}
+	
+	function create_post_type_company() {
+		$labels = array(
+		    'name' => 'Company',
+		    'singular_name' => 'Company',
+		    'add_new' => 'Add New',
+		    'all_items' => 'All Company',
+		    'add_new_item' => 'Add Company',
+		    'edit_item' => 'Edit Company',
+		    'new_item' => 'New Company',
+		    'view_item' => 'View Company',
+		    'search_items' => 'Search Company',
+		    'not_found' =>  'No Company',
+		    'not_found_in_trash' => 'No Company found in trash',
+		    'parent_item_colon' => 'Parent Company:',
+		    'menu_name' => 'Company'
+		);
+		$args = array(
+			'labels' => $labels,
+                        'description' => "A description for your post type",
+                        'public' => true,
+                        'exclude_from_search' => true,
+                        'publicly_queryable' => true,
+                        'show_ui' => true, 
+                        'show_in_nav_menus' => true, 
+                        'show_in_menu' => true,
+                        'show_in_admin_bar' => true,
+                        'menu_position' => 20,
+                        'menu_icon' => null,
+                        'capability_type' => 'post',
+                        'hierarchical' => true,
+                        'supports' => array('title','editor','author','thumbnail','custom-fields','page-attributes','post-formats', 'excerpt'),
+                        'has_archive' => true,
+                        'rewrite' => array('slug' => 'company', 'with_front' => false),
+                        'query_var' => true,
+                        'can_export' => true
+		); 
+		register_post_type('company',$args);
+	}
+}
+$company = new company();
+ 
 /**
 * 
 * All Blogs
 *
 * @since MGPE 1.0
 */
- function Allblogs(){
+ function featured_company(){
 	  $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-      $Allblogs = new WP_Query();
-      $Allblogs ->query(array(
-          "post_type"=>"post",
+      $featured_company = new WP_Query();
+      $featured_company ->query(array(
+          "post_type"=>"company",
           "post_status"=>"publish",
           "orderby" => "date",
           "order" => "DESC",
-		  "showposts" => 6,
+          "metakey" => "featured_post",
+          "metavalue" => "Yes",
+          "order" => "DESC",
+		  "showposts" => 1,
 		  "paged" => $paged
 
           ));
      ob_start();?>
-	<?php if ( $Allblogs-> have_posts() ) : while($Allblogs->have_posts()):  $Allblogs -> the_post(); ?>
-	<div class="entry-blog clearfix animate">
-	    <a href="<?php the_permalink(); ?>">
-	        <div class="col-md-12 no-padding">
-	            
-	            <div class="col-md-4 col-sm-4 col-xs-12">
-	                <?php if ( has_post_thumbnail() ) { the_post_thumbnail('thumbnail', array('class' => 'col-md-12 col-xs-12 thumbnail')); } ?>
-	            </div>
-
-	            <div class="col-md-8 col-sm-8 col-xs-12">
-					<div class="clearfix">
-	                <h3><?php the_title(); ?></h3>  
-	                <p class="col-md-6 col-sm-6 col-xs-6 no-padding no-margin-bottom "><small>Posted: <?php echo get_the_date( 'M d,y' ); ?></small></p>
-	                <p class="col-md-6 col-sm-6 col-xs-6 no-padding no-margin-bottom text-right"><small><?php echo the_tags(); ?></small></p>
-	                </div>
-	                <div class=""><p><?php the_excerpt(); ?></p></div>
-	                <hr>
-	                <div class="col-md-12 text-right no-padding">
-	                    <a href="<?php the_permalink() ?>" class="btn btn-default">
-	                        Read More
-	                   </a>
-	                </div>
-	            </div>
-
+	<?php while($featured_company->have_posts()):  $featured_company -> the_post(); ?>
+		<a href="<?php echo (!empty(get_field('company_link'))) ? get_field('company_link') : '/'; ?>">
+			<div class="col-md-6 no-padding">
+	            <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 sidebar-front clearfix cta-div no-padding">           
+	                <h3>Company of the week!</h3>           
+	                <div class="cta">           
+	                    <?php the_content(); ?>  
+	                </div>  
+	            </div>  
 	        </div>
-	    </a>
-	</div>
+	    </a>  
 	<?php endwhile; ?>
-		<?php if(function_exists('wp_pagenavi')) {  wp_pagenavi( array( 'query' => $Allblogs ) ); } ?>
-	<?php else: ?>
-	    <h2 class="text-center">Sorry, no posts yet.</h2>
-	<?php endif; ?>
+
 	<?php
 	$contents = ob_get_contents();
 	ob_get_clean();
 	return $contents;
  }
  
- add_shortcode("Allblogs", "Allblogs");
- 
- /*
- *
- * Custom Post Type for Confession
- *
- */
- 
- class confessions {
-	
-	function confessions() {
-		add_action('init',array($this,'create_post_type'));
-	}
-	
-	function create_post_type() {
-		$labels = array(
-		    'name' => 'Confessions',
-		    'singular_name' => 'Confessions',
-		    'add_new' => 'Add New',
-		    'all_items' => 'All Confessions',
-		    'add_new_item' => 'Add Confessions',
-		    'edit_item' => 'Edit Confessions',
-		    'new_item' => 'New Confessions',
-		    'view_item' => 'View Confessions',
-		    'search_items' => 'Search Confessions',
-		    'not_found' =>  'No Confessions',
-		    'not_found_in_trash' => 'No Confessions found in trash',
-		    'parent_item_colon' => 'Parent Confessions:',
-		    'menu_name' => 'Confessions'
-		);
-		$args = array(
-			'labels' => $labels,
-                        'description' => "A description for your post type",
-                        'public' => true,
-                        'exclude_from_search' => true,
-                        'publicly_queryable' => true,
-                        'show_ui' => true, 
-                        'show_in_nav_menus' => true, 
-                        'show_in_menu' => true,
-                        'show_in_admin_bar' => true,
-                        'menu_position' => 20,
-                        'menu_icon' => null,
-                        'capability_type' => 'post',
-                        'hierarchical' => true,
-                        'supports' => array('title','editor','author','thumbnail','custom-fields','page-attributes','post-formats', 'excerpt'),
-                        'has_archive' => true,
-                        'rewrite' => array('slug' => 'confession', 'with_front' => false),
-                        'query_var' => true,
-                        'can_export' => true
-		); 
-		register_post_type('confessions',$args);
-	}
-}
-$confessions = new confessions();
-
-/*
- *
- * Custom Post Type for Verse
- *
- */
- 
- class verse {
-	
-	function verse() {
-		add_action('init',array($this,'create_post_type'));
-	}
-	
-	function create_post_type() {
-		$labels = array(
-		    'name' => 'Verse',
-		    'singular_name' => 'Verse',
-		    'add_new' => 'Add New',
-		    'all_items' => 'All Verse',
-		    'add_new_item' => 'Add Verse',
-		    'edit_item' => 'Edit Verse',
-		    'new_item' => 'New Verse',
-		    'view_item' => 'View Verse',
-		    'search_items' => 'Search Verse',
-		    'not_found' =>  'No Verse',
-		    'not_found_in_trash' => 'No Verse found in trash',
-		    'parent_item_colon' => 'Parent Verse:',
-		    'menu_name' => 'Verse'
-		);
-		$args = array(
-			'labels' => $labels,
-                        'description' => "A description for your post type",
-                        'public' => true,
-                        'exclude_from_search' => true,
-                        'publicly_queryable' => true,
-                        'show_ui' => true, 
-                        'show_in_nav_menus' => true, 
-                        'show_in_menu' => true,
-                        'show_in_admin_bar' => true,
-                        'menu_position' => 20,
-                        'menu_icon' => null,
-                        'capability_type' => 'post',
-                        'hierarchical' => true,
-                        'supports' => array('title','editor','author','thumbnail','custom-fields','page-attributes','post-formats', 'excerpt'),
-                        'has_archive' => true,
-                        'rewrite' => array('slug' => 'verse', 'with_front' => false),
-                        'query_var' => true,
-                        'can_export' => true
-		); 
-		register_post_type('verse',$args);
-	}
-}
-$verse = new verse();
-
-
-/**
-* 
-* Latest Confession
-*
-* @since MGPE 1.0
-*/
- function latestConfess(){
-      $latestConfess = new WP_Query();
-      $latestConfess ->query(array(
-          "post_type"=>"confessions",
-          "post_status"=>"publish",
-          "orderby" => "date",
-          "order" => "DESC",
-          "showposts" => 3,
-			
-          ));
-     ob_start();?>
-	<div class="clearfix">
-	<hr>
-	<h3 class="text-center">Latest Confession</h3>
-	<hr>
-	<?php if ( $latestConfess-> have_posts() ) : while($latestConfess->have_posts()):  $latestConfess -> the_post(); ?>
-		<div class="entry-blog col-md-12 clearfix animate">
-			<a href="<?php the_permalink(); ?>">
-				<div class="col-md-12 no-padding">
-					
-					<?php /* ?><div class="col-md-4">
-						<?php if ( has_post_thumbnail() ) { the_post_thumbnail('thumbnail', array('class' => 'col-md-12 col-xs-12 thumbnail')); } ?>
-					</div><?php */ ?>
-
-					<div class="col-md-12 no-padding">
-
-						<h3><?php the_title(); ?></h3>  
-					   
-						<div><p><?php the_excerpt(); ?></p></div>
-						<hr>
-						<div class="col-md-12 text-right no-padding">
-							<a href="<?php the_permalink() ?>" class="btn btn-default">
-								Read More
-						   </a>
-						</div>
-					</div>
-
-				</div>
-			</a>
-		</div>
-	<?php endwhile; else: ?>
-	    <h2 class="text-center">Sorry, no posts yet.</h2>
-	<?php endif; ?>
-	</div>
-	<?php
-	$contents = ob_get_contents();
-	ob_get_clean();
-	return $contents;
- }
- 
- add_shortcode("latestConfess", "latestConfess");
-
-/**
-* 
-* All Confession
-*
-* @since MGPE 1.0
-*/
- function allconfess(){
-	$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-	$allconfess = new WP_Query();
-	$allconfess ->query(array(
-	  "post_type"=>"confessions",
-	  "post_status"=>"publish",
-	  "orderby" => "date",
-	  "order" => "DESC",
-	  "showposts" => 10,
-	  "paged" => $paged
-	  ));
-     ob_start();?>
-	<?php if ( $allconfess->have_posts() ) :  while ( $allconfess->have_posts() ) : $allconfess->the_post(); ?>
-		<div class="entry-blog clearfix animate">
-				<a href="<?php the_permalink(); ?>">
-					<div class="col-md-12">
-						
-						<?php /* ?><div class="col-md-4">
-							<?php if ( has_post_thumbnail() ) { the_post_thumbnail('thumbnail', array('class' => 'col-md-12 col-xs-12 thumbnail')); } ?>
-						</div><?php */ ?>
-
-						<div class="col-md-12">
-
-							<h3><?php the_title(); ?></h3>  
-						   
-							<div><p><?php the_excerpt(); ?></p></div>
-							<hr>
-							<div class="col-md-12 text-right no-padding">
-								<a href="<?php the_permalink() ?>" class="btn btn-default">
-									Read More
-							   </a>
-							</div>
-						</div>
-
-					</div>
-				</a>
-			</div>
-	<?php endwhile; ?>
-		<?php if(function_exists('wp_pagenavi')) {  wp_pagenavi( array( 'query' => $allconfess ) ); } ?>
-	<?php else: ?>
-			<h2 class="text-center">Sorry, no posts yet.</h2>
-	<?php endif; ?>
-	<?php
-	$contents = ob_get_contents();
-	ob_get_clean();
-	return $contents;
- }
- 
- add_shortcode("allconfess", "allconfess");
- 
+ add_shortcode("featured_company", "featured_company"); 
  /* Remove query strings from static resources */
  function _remove_script_version( $src ){
 	$parts = explode( '?', $src );

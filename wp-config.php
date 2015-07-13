@@ -1,4 +1,4 @@
-<?php
+<?php define('WPCF7_LOAD_JS', false);
 /**
  * The base configurations of the WordPress.
  *
